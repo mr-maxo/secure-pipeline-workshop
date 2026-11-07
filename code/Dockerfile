@@ -1,7 +1,7 @@
-FROM node:24-alpine
+FROM node:24-bookworm-slim
 
-RUN addgroup -g 1001 -S nodejs && \
-  adduser -S nextjs -u 1001 -G nodejs
+RUN groupadd --gid 1001 --system nodejs && \
+  useradd --uid 1001 --system --gid nodejs nextjs
 
 WORKDIR /app
 
