@@ -1,6 +1,4 @@
-FROM node:20-alpine3.19
-
-RUN npm install -g npm@11.13.0 && npm cache clean --force
+FROM node:24-alpine
 
 RUN addgroup -g 1001 -S nodejs && \
   adduser -S nextjs -u 1001 -G nodejs
@@ -9,8 +7,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --only=production && \
-  npm cache clean --force
+RUN npm ci --omit=dev && \
+  npm cache clean --force && \
+  rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 
 COPY --chown=nextjs:nodejs src/ ./src/
 
@@ -21,4 +20,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 USER nextjs
 
-CMD ["npm", "start"]
+CMD ["node", "src/simple-app.js"]
